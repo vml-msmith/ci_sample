@@ -23,9 +23,10 @@ echo ' mbstring_input=' . ini_get('mbstring.http_input');
 echo ' mbstring_output=' . ini_get('mbstring.http_output');
 " > ${DIR}/../docroot/phpsettings.php
 
-## Startup the Docker servers. Ensures a new build first.:Q
+## Startup the Docker servers. Ensures a new build first.
 printf "${YELLOW}Starting Docker servers....${NC}"
 echo ""
+docker-compose -f ${DIR}/../.docker/docker-compose.yml -p testdocker rm -f
 docker-compose -f ${DIR}/../.docker/docker-compose.yml -p testdocker build
 `${DOCKER_COMPOSE} up -d`
 
