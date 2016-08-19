@@ -128,6 +128,6 @@ fi
 echo ""
 printf "\n${YELLOW}Cleaning up....${NC}"
 echo ""
-`${DOCKER_COMPOSE} kill`
+#`${DOCKER_COMPOSE} kill`
 
 exit ${exit_code}
