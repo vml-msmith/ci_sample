@@ -28,8 +28,9 @@ parallel (
     phase2: {
         node {
             parallel (
-                sh 'php docroot/core/scripts/run-tests.sh --sqlite tmp/test.sqlite --verbose --non-html --color --concurrency 15'
-                phase1: { sh "echo PHP Tests" },
+                phase1: {
+                    sh 'php docroot/core/scripts/run-tests.sh --sqlite tmp/test.sqlite --verbose --non-html --color --concurrency 15'
+                },
                 phase2: { sh "echo SonarQube Tests" },
                 phase3: { sh "echo PHP Unit Tests" },
                 phase4: { sh "echo JS Unit Tests" }
