@@ -3,7 +3,7 @@ node {
      checkout scm
      echo "Stage 1: Run Docker Tests"
      sh 'env | sort'
-
+     sh 'git log'
      echo "{$env.BRANCH_NAME}"
      echo "{$ghprbSourceBranch}"
      echo "{$ghprbTargetBranch}"
