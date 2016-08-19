@@ -7,7 +7,7 @@ node {
 
 stage name: 'Composer Update', concurrency: 1
 node {
-    sh 'sleep 1s'
+    sh './scripts/dcomposer.sh install --prefer-dist'
     sh 'ls'
 }
 
