@@ -37,7 +37,7 @@ port=`docker port testdocker_app_1 80`
 port=${port#*:}
 echo ""
 printf "Testing normal port 80 accesss.... "
-http_code=`curl -sL -w "%{http_code}" "localhost:${port}" -o /dev/null`
+http_code=`curl -sL -w "%{http_code}" "localhost:${port}/phpinfo.php" -o /dev/null`
 if [ ${http_code} -eq 200 ]
 then
     printf "${GREEN}Success${NC}"
@@ -54,7 +54,7 @@ port_ssl=`docker port testdocker_app_1 443`
 port_ssl=${port_ssl#*:}
 
 printf "Testing SSL port 443 accesss.... "
-http_code_ssl=`curl -sLk -w "%{http_code}" "https://localhost:${port_ssl}" -o /dev/null`
+http_code_ssl=`curl -sLk -w "%{http_code}" "https://localhost:${port_ssl}/phpinfo.php" -o /dev/null`
 if [ ${http_code_ssl} -eq 200 ]
 then
     printf "${GREEN}Success${NC}"
