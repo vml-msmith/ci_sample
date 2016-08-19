@@ -3,6 +3,7 @@ node {
      checkout scm
      echo "Stage 1: Run Docker Tests"
      sh 'env | sort'
+     echo "{$env.BRANCH_NAME}"
      sh './scripts/test-docker.sh'
 }
 
