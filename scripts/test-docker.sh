@@ -36,9 +36,9 @@ exit_code=0
 port=`docker port testdocker_app_1 80`
 port=${port#*:}
 echo ""
-sleep 5
 printf "Testing normal port 80 accesss.... "
 http_code=`curl -sLk -w "%{http_code}" "localhost:${port}/phpinfo.php" -o /dev/null`
+http_code=`curl -sLk "localhost:${port}/phpinfo.php"`
 if [ ${http_code} -eq 200 ]
 then
     printf "${GREEN}Success${NC}"
