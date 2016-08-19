@@ -39,7 +39,7 @@ echo ""
 printf "Testing normal port 80 accesss.... "
 http_code=`curl -sLk -w "%{http_code}" "localhost:${port}/phpinfo.php" -o /dev/null`
 output=`curl -sLk "localhost:${port}/phpinfo.php"`
-echo output
+echo ${output}
 
 if [ ${http_code} -eq 200 ]
 then
