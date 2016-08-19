@@ -2,7 +2,7 @@ stage name: 'Docker Tests', concurrency: 1
 node {
      checkout scm
      echo "Stage 1: Run Docker Tests"
-     echo "${BRANCH_NAME}"
+     sh 'env | sort'
      sh './scripts/test-docker.sh'
 }
 
