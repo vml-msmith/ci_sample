@@ -8,13 +8,17 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DOCKER_COMPOSE="docker-compose -f ${DIR}/../.docker/docker-compose.yml -p testdocker"
 
 # Setup docroot
-make_docroot=0
-if [ ! -d "${DIR}/../docroot" ]; then
-    echo "Making docroot"
-    make_docroot=1
-    mkdir -p ${DIR}/../docroot
-    touch ${DIR}/../docroot/index.html
+move_docroot=0
+if [ -d "${DIR}/../docroot" ]; then
+    echo "Moving old docroot"
+    mv ${DIR}/../docroot ${DIR}/../docroot_test
+    move_docroot=1;
 fi
+
+echo "Making test docroot"
+mkdir -p ${DIR}/../docroot
+touch ${DIR}/../docroot/index.html
+
 ## Test for PHP Extensions.
 echo "<?php
 echo ' version=' . phpversion() . ' ';
@@ -115,9 +119,12 @@ fi
 
 rm -r ${DIR}/../docroot/phpsettings.php
 
-if [ ${make_docroot} -eq 1 ]; then
-    echo "remove docroot"
-    rm -r ${DIR}/../docroot
+echo "Remove test docroot"
+rm -r ${DIR}/../docroot
+
+if [ ${move_docroot} -eq 1 ]; then
+    echo "Replace docroot"
+    mv ${DIR}/../docroot_test ${DIR}/../docroot
 fi
 
 
