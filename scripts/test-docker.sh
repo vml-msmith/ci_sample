@@ -8,13 +8,17 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DOCKER_COMPOSE="docker-compose -f ${DIR}/../.docker/docker-compose.yml -p testdocker"
 
 # Setup docroot
-make_docroot=0
-if [ ! -d "${DIR}/../docroot" ]; then
-    echo "Making docroot"
-    make_docroot=1
-    mkdir -p ${DIR}/../docroot
-    touch ${DIR}/../docroot/index.html
+move_docroot=0
+if [ -d "${DIR}/../docroot" ]; then
+    echo "Moving old docroot"
+    mv ${DIR}/../docroot ${DIR}/../docroot_test
+    move_docroot=1;
 fi
+
+echo "Making test docroot"
+mkdir -p ${DIR}/../docroot
+touch ${DIR}/../docroot/index.html
+
 ## Test for PHP Extensions.
 echo "<?php
 echo ' version=' . phpversion() . ' ';
@@ -23,10 +27,9 @@ echo ' mbstring_input=' . ini_get('mbstring.http_input');
 echo ' mbstring_output=' . ini_get('mbstring.http_output');
 " > ${DIR}/../docroot/phpsettings.php
 
-## Startup the Docker servers. Ensures a new build first.
+## Startup the Docker servers. Ensures a new build first.:Q
 printf "${YELLOW}Starting Docker servers....${NC}"
 echo ""
-docker-compose -f ${DIR}/../.docker/docker-compose.yml -p testdocker rm -f
 docker-compose -f ${DIR}/../.docker/docker-compose.yml -p testdocker build
 `${DOCKER_COMPOSE} up -d`
 
@@ -38,10 +41,7 @@ port=`docker port testdocker_app_1 80`
 port=${port#*:}
 echo ""
 printf "Testing normal port 80 accesss.... "
-http_code=`curl -sLk -w "%{http_code}" "localhost:${port}/phpinfo.php" -o /dev/null`
-output=`curl -sLk "localhost:${port}/phpinfo.php"`
-echo ${output}
-
+http_code=`curl -sL -w "%{http_code}" "localhost:${port}" -o /dev/null`
 if [ ${http_code} -eq 200 ]
 then
     printf "${GREEN}Success${NC}"
@@ -58,7 +58,7 @@ port_ssl=`docker port testdocker_app_1 443`
 port_ssl=${port_ssl#*:}
 
 printf "Testing SSL port 443 accesss.... "
-http_code_ssl=`curl -sLk -w "%{http_code}" "https://localhost:${port_ssl}/phpinfo.php" -o /dev/null`
+http_code_ssl=`curl -sLk -w "%{http_code}" "https://localhost:${port_ssl}" -o /dev/null`
 if [ ${http_code_ssl} -eq 200 ]
 then
     printf "${GREEN}Success${NC}"
@@ -119,9 +119,12 @@ fi
 
 rm -r ${DIR}/../docroot/phpsettings.php
 
-if [ ${make_docroot} -eq 1 ]; then
-    echo "remove docroot"
-    rm -r ${DIR}/../docroot
+echo "Remove test docroot"
+rm -r ${DIR}/../docroot
+
+if [ ${move_docroot} -eq 1 ]; then
+    echo "Replace docroot"
+    mv ${DIR}/../docroot_test ${DIR}/../docroot
 fi
 
 
@@ -129,6 +132,6 @@ fi
 echo ""
 printf "\n${YELLOW}Cleaning up....${NC}"
 echo ""
-#`${DOCKER_COMPOSE} kill`
+`${DOCKER_COMPOSE} kill`
 
 exit ${exit_code}
