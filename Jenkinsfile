@@ -1,6 +1,7 @@
 stage name: 'Docker Tests', concurrency: 1
 node {
     echo "Stage 1: Run Docker Tests"
+    sh 'ls'
     sh './scripts/test-docker.sh'
 }
 
