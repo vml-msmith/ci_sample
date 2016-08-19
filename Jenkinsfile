@@ -2,13 +2,13 @@ stage name: 'Docker Tests', concurrency: 1
 node {
      checkout scm
      echo "Stage 1: Run Docker Tests"
+     echo "${BRANCH_NAME}"
      sh './scripts/test-docker.sh'
 }
 
 stage name: 'Composer Update', concurrency: 1
 node {
     sh './scripts/dcomposer.sh install --prefer-dist'
-    sh 'ls'
 }
 
 stage name: 'Pre-Checking', concurrency: 1
