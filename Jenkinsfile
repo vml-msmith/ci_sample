@@ -5,9 +5,6 @@ node {
      sh 'env | sort'
      sh 'git log'
      echo "{$env.BRANCH_NAME}"
-     echo "{$ghprbSourceBranch}"
-     echo "{$ghprbTargetBranch}"
-
      sh './scripts/test-docker.sh'
 }
 
@@ -31,6 +28,7 @@ parallel (
     phase2: {
         node {
             parallel (
+                sh 'php docroot/core/scripts/run-tests.sh --sqlite tmp/test.sqlite --verbose --non-html --color --concurrency 15'
                 phase1: { sh "echo PHP Tests" },
                 phase2: { sh "echo SonarQube Tests" },
                 phase3: { sh "echo PHP Unit Tests" },
